@@ -1,4 +1,5 @@
 <?php 
+
 $productOne = get_query_var('product_compare_one', '');
 $productTwo = get_query_var('product_compare_two', '');
 
@@ -27,9 +28,11 @@ if (!empty($products)){
                     $table .= '<li>' . wc_attribute_label($attribute['name']) . ': <span>'. $product->get_attribute($attribute['name']) .'</span></li>'; 
                 }
             }
-
-            if ($addToCartBtn) {
-                $table .= do_shortcode('[add_to_cart id="'. get_the_ID() .'"]');
+ 
+            if ($product->is_purchasable() && $addToCartBtn){
+                var_dump($product);die;
+                $addToCartUrl = do_shortcode('[add_to_cart_url id="'. $product->get_id() .'"]');
+                $table .= "<a href=". $addToCartUrl .">Buy now</a>";
             }
             
             $table .= '<hr>';
