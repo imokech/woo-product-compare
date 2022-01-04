@@ -1,26 +1,41 @@
 (function ($) {
     'use strict';
     $(function () {
-        console.log(WCP_OBJ.compare_page_url);
-        $('.compare-product').on('click', function (event) {
-
+        let slugs = [];
+        
+        $('.add-compare-product').on('click', function (event) {
             event.preventDefault();
+
+            let localSlugs =  JSON.parse(localStorage.getItem('compareUrl'));
+
+            if (localSlugs > 1) {
+                slugs = compareUrl;
+            }
             // Finding Prodct Card and Get Product Slug (sample)
-            let productSlug  = $('.add-compare-product').href.substring($({'.add-compare-product'}).href.lastIndexOf('/') + 1);
-            
+            let productSlug  = $(this).attr('data-slug');
+
             // Pop up display link (sample)
             let notify = $('.notification');
-
-             // generate link 
-            let compareUrl = localStorage.getItem('compareUrl');
-            if (compareUrl) {
-                compareUrl = '/' + productSlug;
+            
+            // generate link 
+            if (!slugs.includes(productSlug)) {
+                if (slugs.length > 1) {
+                    slugs.shift()
+                }
+                slugs.push(productSlug);
             } else {
-                compareUrl = WCP_OBJ.compare_page_url + productSlug ;
+                alert('already selected!');
             }
-          
+            
+            let productCompareSlugs = '';
+            $.each(slugs, function( index, value ) {
+                productCompareSlugs += value + '/';
+            });
+
+            let compareUrl = WCP_OBJ.compare_page_url + '/' + productCompareSlugs ;
+            
             // it could be hashed !
-            localStorage.setItem('compareUrl', compareUrl);
+            localStorage.setItem('compareUrl',  JSON.stringify(slugs));
 
             // Add content to Popup
             //  notify.addClass('alert-success');
@@ -28,8 +43,8 @@
             //  notify.show(400);
 
             alert(compareUrl);
-
-         });
+        
+        });
     });
 
 })(jQuery);

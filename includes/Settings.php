@@ -14,7 +14,7 @@ class Settings
 
     public function addCompareButton( $addToCartHtml, $product, $args )
     {
-        $compareButton = '<button class="add-compare-product">'. __('Compare', Text_Domain) .'<button>';
+        $compareButton = '<button class="add-compare-product" data-slug="'. $product->get_slug() .'">'. __('Compare', Text_Domain) .'</button>';
         
         return $addToCartHtml . $compareButton;
     }

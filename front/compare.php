@@ -17,20 +17,30 @@ $products = [
 if (!empty($products)){
     $attrsSetting = get_option('wcp_attributes');
     $table .= '<ul>';
+    
     foreach ($products as $product) {
+
         if (!empty($product)) {
             $product = wc_get_product($product->ID);
             $attributes = $product->get_attributes();
-            
-            foreach ($attributes as $attribute){
-                if ($attrsSetting[str_replace('pa_', '', $attribute['name'])]) {
-                    // Html Table Template (sample)
-                    $table .= '<li>' . wc_attribute_label($attribute['name']) . ': <span>'. $product->get_attribute($attribute['name']) .'</span></li>'; 
+            $imageSize = get_option('compare_image_size') ?? 'thumbnail';
+            $image = get_the_post_thumbnail_url($product->ID, $imageSize);
+            $table .= "<img src=". $image[0] .">";
+
+            foreach ($attrsSetting as $attribute => $check){
+                $attribute = 'pa_'.$attribute;
+                if (array_key_exists($attribute, $attributes)) {
+                    // Html Table Template Place (later!)
+                    if ($image) {
+                        $table .= '<img src="'. $image .'">';
+                    }
+                    $table .= '<li>' . wc_attribute_label($attribute) . ': <span>'. $product->get_attribute($attribute) .'</span></li>'; 
+                } else {
+                    $table .= '<li>' . wc_attribute_label($attribute) . ': <span> - </span></li>'; 
                 }
             }
  
             if ($product->is_purchasable() && $addToCartBtn){
-                var_dump($product);die;
                 $addToCartUrl = do_shortcode('[add_to_cart_url id="'. $product->get_id() .'"]');
                 $table .= "<a href=". $addToCartUrl .">Buy now</a>";
             }
